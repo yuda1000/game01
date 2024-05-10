@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang = "ja">
+    <head>
+        <meta charset = "UTF-8">
+        <title>三目並べ</title>
+    </head>
+    <body>
+        <script>
+            var canvas = document.createElement('canvas');
+            var board = canvas.getContext('2d');
+
+            canvas.width = document.documentElement.clientWidth;
+            canvas.height = document.documentElement.clientHeight;
+
+            document.body.appendChild(canvas);
+
+            board.strokeRect(360,0,600,600);
+
+            function strokeLine(x,y,X,Y){
+                board.beginPath();
+                board.moveTo(x,y);
+                board.lineTo(X,Y);
+                board.stroke();
+            }
+
+            for(i = 1 ; i <= 2 ; i ++){
+                strokeLine(360 + (i * 200) , 0 , 360 + (i * 200) , 600);
+                strokeLine(360 , (i * 200) , 960 , (i * 200));
+            }
+
+            var array = new Array(3);
+            for(i = 0 ; i <= 2 ; i++){
+                    array[i] = new Array(3);
+            }
+            for(i = 0 ; i <= 2 ; i ++){
+                for (j = 0 ; j <= 2 ; j ++){
+                    array[i][j] = 0;
+                }
+            }
+            
+            function Check(Array , PlayerNo){
+                var checker;
+                for(a = 0 ; a < Array.length ; a ++){
+                    checker = true;
+                    if(Array[a][a] != PlayerNo){
+                        checker = false;
+                        break;
+                    }
+                }
+                if(checker == true){
+                        return true;
+                }
+
+                for(a = 0 ; a < Array.length ; a ++){
+                    checker = true;
+                        if(Array[a][Array.length - 1 - a] != PlayerNo){
+                            checker = false;
+                            break;
+                        }
+                }
+                if(checker == true){
+                        return true;
+                }  
+
+                for(a = 0 ; a < Array.length ; a ++){
+                    checker = true;
+                    for(b = 0 ; b < Array[a].length ; b ++){
+                        if(Array[a][b] != PlayerNo){
+                            checker = false;
+                            break;
+                        }
+                    }
+                    if(checker == true){
+                        return true;
+                    }
+                }
+
+                for(a = 0 ; a < Array[a].length ; a ++){
+                    checker = true;
+                    for(b = 0 ; b < Array.length ; b ++){
+                        if(Array[b][a] != PlayerNo){
+                            checker = false;
+                            break;
+                        }
+                    }
+                    if(checker == true){
+                        return true;
+                    }
+                } 
+                return false;
+            }
+
+            function Alert(PlayerNo){
+                setTimeout(function()
+                {
+                    alert("プレイヤー" + PlayerNo + "の勝利");
+                } , 100);
+            }
+
+            function Click(event , PlayerNo){
+                var x = event.offsetX;
+                var y = event.offsetY;
+                for(i = 0 ; i <= 2 ; i ++){
+                    for(j = 0 ; j <= 2 ; j ++){
+                        var Xcoordinate = i * 200;
+                        var Ycoordinate = j * 200;
+                        if(360 + Xcoordinate < x && x < 560 + Xcoordinate && 0 + Ycoordinate < y && y < 200 + Ycoordinate && array[j][i] != 1 && array[j][i] != 2){
+                            if(PlayerNo == 1){
+                                board.beginPath();
+                                board.arc(460 + Xcoordinate , 100 + Ycoordinate , 70 , 0 , 2 * Math.PI);
+                                board.stroke();
+                                array[j][i] = 1;
+                                turn ++;
+                                if(Check(array , 1) == true){
+                                    Alert(1);
+                                }
+                            }
+                            if(PlayerNo == 2){
+                                strokeLine(400+Xcoordinate , 40+Ycoordinate , 520+Xcoordinate , 160+Ycoordinate);
+                                strokeLine(400+Xcoordinate , 160+Ycoordinate , 520+Xcoordinate , 40+Ycoordinate);
+                                array[j][i] = 2;
+                                turn ++;
+                                if(Check(array , 2) == true){
+                                    Alert(2);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            var turn = 0;
+            document.body.addEventListener('click' , function(event)
+            {
+                var X = event.offsetX;
+                var Y = event.offsetY;
+                if(360 < X && X < 960 && 0 < Y && Y < 600){
+                   if(turn % 2 == 0){
+                        Click(event , 1);
+                    }else{
+                        Click(event , 2);  
+                    }
+                }
+            });
+            
+        </script>
+    </body>
+</html>
